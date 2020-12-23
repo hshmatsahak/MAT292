@@ -1,0 +1,19 @@
+function x = solvesystem_sahakhsh(f,g,t0,tN,x0,h)
+numsteps = floor((tN-t0)/h);
+xvals = zeros(2, numsteps+1);
+xvals(1,1) = x0(1);
+xvals(2,1) = x0(2);
+for i = 1:numsteps
+   init_time = t0 + h*(i-1);
+   init_x = xvals(:,i);
+   end_time = t0 + h*i;
+   slope1x1 = f(init_time, init_x(1), init_x(2));
+   slope1x2 = g(init_time, init_x(1), init_x(2));
+   end_x = init_x + [slope1x1*h; slope1x2*h];
+   slope2x1 = f(end_time, end_x(1), end_x(2));
+   slope2x2 = g(end_time, end_x(1), end_x(2));
+   slopeavg = [(slope1x1+slope2x1)/2; (slope1x2+slope2x2)/2];
+   xvals(:,i+1) = xvals(:,i) + slopeavg*h; 
+end
+times = linspace(t0, tN, numsteps+1);
+x = struct('t', times, 'x', xvals);
